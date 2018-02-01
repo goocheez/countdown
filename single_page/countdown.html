@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <title>倒计时</title>
+        <meta charset="utf-8"/>
+        <style type="text/css">
+            body {background-color:black;}
+            #main{
+                color:yellow;
+                font-weight: bold;
+                font-size: 30em;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 用 code 标签是为了使用 等宽 字体 -->
+        <code id="main">00:00</code>
+
+
+        <script>
+            function fomatCountStr(num) {
+                num = num + ""
+                if(num==0 && num.length==1){
+                    num = "00";
+                }else if(num<=9 && num>=1 && num.length==1){
+                    num = "0" + num;
+                }
+                return num;
+            }
+            </script>
+        <script >
+            const totalTime = 6;
+            var second = 0;
+            var minite = totalTime;
+            const myInterval = setInterval(()=>{
+                console.log(`before format: ${minite}, ${second}`);
+                second = fomatCountStr(second);
+                minite = fomatCountStr(minite);
+                console.log(`after: ${minite}, ${second}`);
+                var countdownStr = minite +":" +second;
+                document.getElementById("main").innerHTML=countdownStr;
+                if (second==0){
+                    minite -= 1;
+                    second = 60;
+                }
+                second -= 1;
+                if (minite<0) {
+                    clearInterval(myInterval);
+                }
+            }, 1000)
+        </script>
+        <script></script>
+    </body>
+</html>
