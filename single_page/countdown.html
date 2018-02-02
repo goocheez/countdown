@@ -3,7 +3,10 @@
         <title>倒计时</title>
         <meta charset="utf-8"/>
         <style type="text/css">
-            body {background-color:black;}
+            body {
+                background-color:black;
+                color: cornflowerblue;
+            }
             #main{
                 color:yellow;
                 font-weight: bold;
@@ -16,39 +19,72 @@
         <!-- 用 code 标签是为了使用 等宽 字体 -->
         <code id="main">00:00</code>
 
-
+        <p>
+            <form name="ff">
+                <button onclick="countdownStart()">Start</button>
+                <input type="text" id="countdownTime" name="countdownTime" value="6" style="width:2em;" />分钟
+            </form>
+            <br/>
+            <button onclick="countdownPause()">Pause</button>
+            <button onclick="countdownReset()">Reset</button>
+        </p>
         <script>
-            function fomatCountStr(num) {
-                num = num + ""
-                if(num==0 && num.length==1){
-                    num = "00";
-                }else if(num<=9 && num>=1 && num.length==1){
-                    num = "0" + num;
-                }
-                return num;
-            }
-            </script>
-        <script >
-            const totalTime = 6;
-            var second = 0;
-            var minite = totalTime;
-            const myInterval = setInterval(()=>{
-                console.log(`before format: ${minite}, ${second}`);
-                second = fomatCountStr(second);
-                minite = fomatCountStr(minite);
-                console.log(`after: ${minite}, ${second}`);
-                var countdownStr = minite +":" +second;
-                document.getElementById("main").innerHTML=countdownStr;
-                if (second==0){
-                    minite -= 1;
-                    second = 60;
-                }
-                second -= 1;
-                if (minite<0) {
-                    clearInterval(myInterval);
-                }
-            }, 1000)
         </script>
-        <script></script>
+        <!-- main -->
+        <!-- assistant functions -->
+        <script> 
+                function fomatCountStr(num) {
+                    num = num + ""
+                    if(num==0 && num.length==1){
+                        num = "00";
+                    }else if(num<=9 && num>=1 && num.length==1){
+                        num = "0" + num;
+                    }
+                    return num;
+                }
+            </script>
+            
+            
+        <!-- action functions -->
+        <script>
+            function countdownStart(){
+                const totalTime = document.getElementById("countdownTime").value;
+                var second = 0;
+                var minite = totalTime;
+                const mainThread = setInterval(()=>{
+                    console.log("start");
+                    second = fomatCountStr(second);
+                    minite = fomatCountStr(minite);
+                    var countdownStr = minite +":" +second;
+                    document.getElementById("main").innerHTML=countdownStr;
+                    if (second==0){
+                        minite -= 1;
+                        second = 60;
+                    }
+                    second -= 1;
+                    if (minite<0) {
+                        clearInterval(mainThread);
+                    }
+                }, 1000);
+
+            }
+            function countdownPause(){
+                console.log("pause");
+            }
+            function countdownReset(){
+                console.log("reset");
+            }
+        </script>
+            
     </body>
+    <!-- 
+        TODO:
+        - 利用按键实现控制
+        - 实现倒数5秒声音提示
+        - 实现键盘控制
+        - 实现可配置
+
+        QUESTION:
+        - 为什么将 js 代码置于 <head> 就无法正确获取 input 的值？
+    -->
 </html>
