@@ -13,22 +13,30 @@
                 font-size: 30em;
                 text-align: center;
             }
+            #countdownTime{
+                background-color:black;
+                color: cornflowerblue;
+            }
+            button{
+                background-color:black;
+                color: rgb(85, 211, 211);
+            }
         </style>
-    </head>
-    <body>
-        <!-- 用 code 标签是为了使用 等宽 字体 -->
-        <code id="main">00:00</code>
 
-        <p>
-            <button onclick="countdownStart()">Start</button>
-            <input type="text" id="countdownTime" name="countdownTime" value="6" style="width:2em;" />分钟
-            <br/>
-            <button onclick="countdownPause()">Pause</button>
-            <button onclick="countdownReset()">Reset</button>
-        </p>
-
-        <!-- assistant functions -->
         <script> 
+            /* global variables */
+            var isStarted = false;
+            var backupName = countdownStart;
+            var totalTime;
+            var second;
+            var minite;
+
+            window.onload = initCountdown;
+
+            /**********************************************
+            * reusable functions 
+            **********************************************/
+
             function fomatCountStr(num) {
                 num = num + ""
                 if(num==0 && num.length==1){
@@ -38,19 +46,7 @@
                 }
                 return num;
             }
-        </script>
 
-
-        <!-- action functions -->
-        <script>
-            var isStarted = false;
-            var backupName = countdownStart;
-            var totalTime;
-            var second;
-            var minite;
-    
-            window.onload = initCountdown;
-            
             function initCountdown(){
                 totalTime = document.getElementById("countdownTime").value;
                 second = fomatCountStr(0);
@@ -58,7 +54,13 @@
                 document.getElementById("main").innerHTML=minite +":" +second;
             }
 
-            function _countdownMain(){
+            /**********************************************
+            * main functions 
+            **********************************************/
+
+            function mainTimer(){
+                if(!isStarted) return;
+
                 if (second==0 && minite>0){
                     minite -= 1;
                     second = 60;
@@ -70,65 +72,81 @@
                 second = fomatCountStr(second);
                 minite = fomatCountStr(minite);
                 document.getElementById("main").innerHTML=minite +":" +second;
+
+                /* use self-callback setTimeout() instead of setInterval() */
+                setTimeout(mainTimer, 1000);
             }
 
-            /* use self-callback setTimeout instead of setInterval */
-            function myTimeout(){
-                if(!isStarted) return;
-                _countdownMain();
-                setTimeout(myTimeout, 1000);
-            }
+            /**********************************************
+            * control functions 
+            **********************************************/
+                        
             function countdownStart(){
                 backupName = countdownStart;
                 countdownStart = null; // To prevent the function from running multiple times. 
 
                 isStarted = true;
-                totalTime = document.getElementById("countdownTime").value;
-                second = fomatCountStr(0);
-                minite = fomatCountStr(totalTime);
-                document.getElementById("main").innerHTML=minite +":" +second;
 
-                myTimeout(); 
+                mainTimer(); 
             }
+
             function countdownPause(){
                 isStarted = false;
                 countdownStart = backupName;
             }
+
             function countdownReset(){
                 countdownPause();
                 initCountdown();
             }
+/*
+TODO:
+    - [x] 利用按键实现控制
+    - [ ] 实现倒数5秒声音提示
+    - [ ] 实现键盘控制
+    - [ ] 实现可配置
+
+QUESTION:
+    - 为什么将 js 代码置于 <head> 就无法正确获取 input 的值？
+    - 为何将 button 置于 <form> 内，就无法正常进行 console.log 打印？
+    
+SUMMARY:
+    - 利用“自回调”的 setTimeout() 代替 setInterval()，以便精确控制定时器的停止;
+
+        timeout = false;
+        function myInterval(){
+            if(timeout) return;
+            ...
+            setTimeout(myInterval, 1000);
+        }
+
+    - 利用暂时转移函数名，避免函数未结束时被重复调用。这主要用于定时器：
+
+        funtion runningFunc(){
+            nikeName = runningFunc;
+            runningFunc = null;
+            ...
+            runningFunc = nikeName;
+        }
+*/
         </script>
+
+
+    </head>
+    <body>
+        <!-- 用 code 标签是为了使用 等宽 字体 -->
+        <hr/>
+        <code id="main">00:00</code>
+        <hr/>
+        <br/><br/><br/>
+
+        <p>
+            <button onclick="countdownStart()">Start</button>
+            <input type="text" id="countdownTime" name="countdownTime" value="6" style="width:2em;" />分钟
+            <button onclick="countdownPause()">Pause</button>
+            <button onclick="countdownReset()">Reset</button>
+        </p>
+
             
     </body>
-    <!-- 
-    TODO:
-        - [x] 利用按键实现控制
-        - [ ] 实现倒数5秒声音提示
-        - [ ] 实现键盘控制
-        - [ ] 实现可配置
-
-    QUESTION:
-        - 为什么将 js 代码置于 <head> 就无法正确获取 input 的值？
-        - 为何将 button 置于 <form> 内，就无法正常进行 console.log 打印？
-        
-    SUMMARY:
-        - 利用“自回调”的 setTimeout() 代替 setInterval()，以便精确控制定时器的停止;
-
-          timeout = false;
-          function myInterval(){
-              if(timeout) return;
-              ...
-              setTimeout(myInterval, 1000);
-          }
-
-        - 利用暂时转移函数名，避免函数未结束时被重复调用。这主要用于定时器：
-
-          funtion runningFunc(){
-              nikeName = running;
-              runningFunc = null;
-              ...
-              runningFunc = nikeName;
-          }
-    -->
 </html>
