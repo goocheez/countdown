@@ -31,7 +31,7 @@
             var second;
             var minite;
 
-            window.onload = initCountdown;
+            // window.onload = initCountdown;
 
             /**********************************************
             * reusable functions 
@@ -87,6 +87,7 @@
 
                 isStarted = true;
 
+                initCountdown();
                 mainTimer(); 
             }
 
@@ -134,9 +135,9 @@ SUMMARY:
 
     </head>
     <body>
-        <!-- 用 code 标签是为了使用 等宽 字体 -->
         <p>
-        <code id="main">00:00</code>
+            <!-- 用 code 标签是为了使用 等宽 字体 -->
+            <code id="main">00:00</code>
         </p>
         <br/><br/><br/>
 
@@ -146,7 +147,6 @@ SUMMARY:
             <button onclick="countdownPause()">Pause</button>
             <button onclick="countdownReset()">Reset</button>
         </p>
-
-            
+       
     </body>
 </html>
